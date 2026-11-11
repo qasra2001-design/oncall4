@@ -1,0 +1,436 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ED On-Call Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--vw:1vw;--vh:1vh;--bg:#0e1319;--panel:#151c25;--tx:#eef3f8;--mut:#93a1b2;--ln:#2a3644;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#eaf0f5;--panel:#fff;--tx:#12202e;--mut:#57687a;--ln:#ced8e2;color-scheme:light}}
+:root[data-theme=light]{--bg:#eaf0f5;--panel:#fff;--tx:#12202e;--mut:#57687a;--ln:#ced8e2;color-scheme:light}
+:root[data-theme=dark]{--bg:#0e1319;--panel:#151c25;--tx:#eef3f8;--mut:#93a1b2;--ln:#2a3644;color-scheme:dark}
+:root[data-theme=contrast]{--bg:#000;--panel:#0b0b0b;--tx:#fff;--mut:#ffe066;--ln:#fff;color-scheme:dark}
+:root[data-theme=navy]{--bg:#0b1e3f;--panel:#12294f;--tx:#f2f6ff;--mut:#a9bfe6;--ln:#2d4c85;color-scheme:dark}
+:root[data-theme=paper]{--bg:#efe9dc;--panel:#fbf7ee;--tx:#2a2118;--mut:#74634f;--ln:#d9ccb5;color-scheme:light}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+html{overflow:hidden}
+body{background:var(--bg);color:var(--tx);font-family:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.6rem 1rem;border-bottom:1px solid var(--ln);flex:none}
+header h1{min-width:12em;color:var(--ttlc,var(--tx));font-size:clamp(18px,calc(2.6*var(--vh)),34px);margin:0;font-weight:700;flex:1;letter-spacing:.01em}
+#clock{font-size:clamp(16px,calc(2.4*var(--vh)),30px);font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--panel);color:var(--tx);border-radius:8px;padding:.35em .9em;font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #4c9aff;outline-offset:1px}
+button.on{background:#2f6fed;border-color:#2f6fed;color:#fff}
+.wrap{flex:1;display:flex;min-height:0;gap:.7rem;padding:.7rem}
+aside{width:calc(clamp(130px,calc(14*var(--vw)),250px)*var(--exw,1));flex:none;display:flex;flex-direction:column;gap:.5rem;background:var(--panel);border:1px solid var(--ln);border-radius:14px;padding:.6rem;overflow:auto}
+aside h3{margin:.1rem .2rem;font-size:clamp(14px,calc(2*var(--vh)),22px);color:var(--mut);font-weight:600}
+.ex{--c:#5f7f9f;flex:1;min-height:64px;display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:10px;border-left:6px solid var(--c);background:color-mix(in srgb,var(--c) 14%,var(--panel))}
+.ex .ic{width:clamp(28px,calc(3.2*var(--vh)),44px);height:clamp(28px,calc(3.2*var(--vh)),44px);flex:none;color:var(--c)}
+.ex b{color:var(--nmc,inherit);display:block;font-size:clamp(15px,min(calc(1.3*var(--vw)),calc(2.4*var(--vh))),26px)}
+.ex span.n{font-size:clamp(15px,min(calc(1.5*var(--vw)),calc(2.6*var(--vh))),30px);font-weight:700;color:var(--lblc,var(--c));filter:var(--lblf,brightness(1.25))}
+main{flex:1;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(clamp(190px,calc(21*var(--vw)),340px),1fr));grid-auto-rows:minmax(min-content,1fr);gap:.7rem;overflow:auto}
+.card{--c:#2f6fed;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid color-mix(in srgb,var(--c) 45%,var(--ln));background:color-mix(in srgb,var(--c) 12%,var(--panel));min-height:120px}
+.hd{display:flex;align-items:center;gap:.6rem;padding:.5rem .7rem;background:var(--c);color:var(--hdc,#fff)}
+.pic{display:grid;place-items:center;flex:none;border-radius:50%;background:#fff;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.hd .pic{width:clamp(40px,calc(6*var(--vh)),76px);height:clamp(40px,calc(6*var(--vh)),76px);font-size:clamp(24px,calc(3.6*var(--vh)),46px)}
+.ex .pic{width:clamp(36px,calc(4.8*var(--vh)),60px);height:clamp(36px,calc(4.8*var(--vh)),60px);font-size:clamp(20px,calc(2.9*var(--vh)),36px);box-shadow:0 0 0 3px var(--c)}
+.hd .ic{width:clamp(30px,calc(4.2*var(--vh)),52px);height:clamp(30px,calc(4.2*var(--vh)),52px);flex:none;background:rgba(255,255,255,.18);border-radius:50%;padding:18%}
+.hd h2{margin:0;font-size:clamp(17px,min(calc(1.7*var(--vw)),calc(3*var(--vh))),34px);font-weight:700;flex:1}
+.docs{list-style:none;margin:0;padding:.3rem .7rem .5rem;flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:.3rem}
+.docs li{display:flex;align-items:center;gap:.6rem;padding:.25rem 0;border-bottom:1px dashed var(--ln)}
+.docs li:last-child{border-bottom:0}
+.nm{color:var(--nmc,inherit);flex:1;min-width:0;overflow-wrap:anywhere;font-size:clamp(13px,min(calc(1.15*var(--vw)),calc(2.1*var(--vh))),26px);font-weight:600;line-height:1.1}
+.nm small{display:block;font-size:.65em;color:var(--mut);font-weight:500}
+.ph{flex:none;font-size:clamp(14px,min(calc(1.35*var(--vw)),calc(2.4*var(--vh))),30px);font-weight:700;font-variant-numeric:tabular-nums;color:var(--lblc,var(--c));filter:var(--lblf,brightness(1.3))}
+.none{color:var(--mut);font-size:clamp(13px,calc(1.8*var(--vh)),20px);padding:.4rem 0}
+input,select{font:inherit;background:transparent;color:inherit;border:1px solid var(--ln);border-radius:6px;padding:.2em .4em;min-width:0;width:100%}
+select option{color:#000}
+.hd input,.hd select{border-color:rgba(255,255,255,.5);color:#fff}
+.hd select option{color:#000}
+.hd input[type=color]{width:34px;padding:0;height:30px;flex:none}
+.hd select{width:auto;flex:none}
+.er{display:grid;grid-template-columns:1fr 1fr auto;gap:.3rem;flex:1}
+.er input:first-child{grid-column:1/-1}
+.x{padding:.1em .55em;color:#e5484d}
+.add{margin:.1rem .7rem .6rem;border-style:dashed}
+.addsp{min-height:90px;border-style:dashed;font-size:1.2rem}
+.exe{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;flex:1;min-width:0}
+.exe input:first-child,.exe select{grid-column:1/-1}
+#tools,#view{display:flex;gap:.4rem}
+#view button{opacity:.75}
+header h1 input{font-size:inherit;font-weight:inherit;width:100%}
+aside h3 input{font-weight:600;font-size:inherit}
+.em{width:3.3em;flex:none;text-align:center}
+.exe .em{width:100%}
+.mv{display:flex;gap:.3rem}
+.exe .mv{grid-column:1/-1}
+.mb{padding:.1em .55em}
+.hd button{background:#fff;color:#12202e;padding:.1em .5em}
+.hd button.x{color:#e5484d}
+.docs,.hd{zoom:var(--z,1)}
+.ex>div{zoom:calc(var(--z,1)*var(--fitx,1))}
+.ex .pic{zoom:var(--fitx,1)}
+.tag{font-size:clamp(11px,calc(1.6*var(--vh)),17px);color:var(--mut);padding:.35rem .7rem 0;font-weight:600}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:20}
+#dlg[hidden]{display:none}
+.panel{background:var(--panel);border:1px solid var(--ln);border-radius:14px;width:min(780px,100%);max-height:calc(92*var(--vh));overflow:auto;padding:1rem;font-size:16px}
+.panel h3{margin:0 0 .4rem;display:flex;align-items:center;gap:.6rem;font-size:1.4rem}
+.panel h3 .pic{width:42px;height:42px;font-size:24px;box-shadow:0 0 0 3px var(--c)}
+.panel h3 .t{flex:1}
+.rf{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.4rem;margin:.6rem 0 .2rem}
+.rf label{display:flex;flex-direction:column;font-size:.8rem;color:var(--mut);gap:.15rem}
+.rf button{align-self:end}
+.panel h4{margin:.9rem 0 .2rem;color:var(--c)}
+.panel h4.tdy{background:var(--c);color:#fff;padding:.15rem .6rem;border-radius:6px}
+.rr{display:grid;grid-template-columns:1.3fr 1fr .8fr auto;gap:.3rem;margin:.25rem 0}
+.rr.past,.panel h4.past{opacity:.5}
+.msg{color:var(--mut);min-height:1.2em;margin:.3rem 0;font-size:.9rem}
+textarea{width:100%;font:inherit;background:transparent;color:inherit;border:1px solid var(--ln);border-radius:6px;padding:.4em;margin:.2rem 0}
+details{margin:.4rem 0}summary{cursor:pointer;font-weight:600}
+.rl{flex:0 0 2.6em;font-weight:700;white-space:nowrap;font-size:clamp(13px,min(calc(1.1*var(--vw)),calc(2*var(--vh))),24px);color:var(--lblc,var(--c));filter:var(--lblf,brightness(1.3))}
+.tier .rl{flex-basis:4em}
+.docs li.colh{border:0;padding:0;font-size:clamp(10px,calc(1.5*var(--vh)),15px);text-transform:uppercase;letter-spacing:.05em}
+.colh .nm{overflow-wrap:normal;white-space:nowrap}
+.colh .rl,.colh .nm,.colh .ph{font-size:inherit;font-weight:600;color:var(--mut);filter:none}
+.hd h2{min-width:0;overflow-wrap:anywhere;font-size:clamp(16px,min(calc(1.45*var(--vw)),calc(2.8*var(--vh))),32px)}
+/* phone numbers hidden in department boxes (data is kept) */
+.card:not(.sph) .ph,.card:not(.sph) input[data-f=phone],.panel:not(.sph) .rf label:has(#rp){display:none}
+.rr{grid-template-columns:1.3fr 1fr auto}
+.panel.sph .rr{grid-template-columns:1.3fr 1fr .8fr auto}
+.er{grid-template-columns:1fr auto}
+.card.sph .er{grid-template-columns:1fr 1fr auto}
+.port aside{width:calc(clamp(110px,calc(18*var(--vw)),200px)*var(--exw,1))}
+.ex{zoom:var(--ez,1)}
+.left{display:flex;flex-direction:column;gap:.7rem;flex:none;min-height:0;width:calc(clamp(130px,calc(14*var(--vw)),250px)*var(--exw,1))}
+.port .left{width:calc(clamp(110px,calc(18*var(--vw)),200px)*var(--exw,1))}
+.left aside{width:auto;flex:1 1 0;min-height:0}
+.wrap.rev{flex-direction:row-reverse}
+.wrap.split .left{display:contents}
+.wrap.split .left aside{width:calc(clamp(120px,calc(11.5*var(--vw)),220px)*var(--exw,1));flex:0 0 auto!important;min-height:0}
+.port .wrap.split .left aside{width:calc(clamp(100px,calc(14*var(--vw)),200px)*var(--exw,1))}
+.wrap.split main{order:1}
+.wrap.split #ext{order:2}
+.wrap.split #ext2{order:0}
+.wrap.split #ext2 .ex{flex:0 0 auto;min-height:calc(11*var(--vh))}
+.wrap.split #ext2{justify-content:flex-start}
+.wrap.tb{flex-direction:column}
+.wrap.tb .left{display:contents}
+.wrap.tb #ext{order:0}
+.wrap.tb main{order:1}
+.wrap.tb #ext2{order:2}
+.wrap.tb .left aside{width:auto;flex:0 0 auto!important;min-height:0;max-height:calc(17*var(--vh));flex-direction:row;flex-wrap:wrap;align-items:stretch;align-content:center;overflow:auto}
+.wrap.tb .left aside h3{flex:none;align-self:center;max-width:7em;margin:0 .4rem}
+.wrap.tb .left .ex{flex:1 1 110px;min-width:0;min-height:56px}
+.wrap.top{flex-direction:column}
+.wrap.bot{flex-direction:column-reverse}
+.top .left,.bot .left{flex-direction:row;width:auto;max-height:calc(32*var(--vh)*var(--exw,1))}
+.top .left.swap,.bot .left.swap{flex-direction:row-reverse}
+.top .left aside,.bot .left aside{flex-direction:row;flex-wrap:wrap;align-items:stretch;align-content:center;overflow:auto}
+.top .left aside h3,.bot .left aside h3{flex:none;align-self:center;max-width:7em;margin:0 .3rem}
+.top .left .ex,.bot .left .ex{flex:1 1 120px;min-width:0;min-height:56px}
+#view .side{padding:.35em .6em}
+.left.swap{flex-direction:column-reverse}
+.dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:0 .25em;opacity:.75;font-size:1.3em;line-height:1;flex:none}
+.dh:active{cursor:grabbing}
+.dragging{opacity:.35}
+.drop{outline:3px dashed #4c9aff;outline-offset:-3px}
+body.drg{cursor:grabbing;user-select:none}
+.left .ex{min-height:0}
+.left .ex b{font-size:clamp(13px,min(calc(1.05*var(--vw)),calc(2*var(--vh))),22px);line-height:1.1}
+.left .ex span.n{font-size:clamp(14px,min(calc(1.2*var(--vw)),calc(2.2*var(--vh))),26px)}
+#ext2 .ex{zoom:var(--ez2,1)}
+#ext2[hidden]{display:none}
+.card .docs,.card .hd,.card .tag{zoom:calc(var(--z,1)*var(--cz,1)*var(--fit,1))}
+.thm{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0}
+.crow{display:grid;grid-template-columns:1fr 54px auto;gap:.5rem;align-items:center;margin:.35rem 0}
+.crow input[type=color]{padding:0;height:34px}
+.sz{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;padding:.3rem .7rem 0;font-size:.8rem;color:var(--mut);font-weight:600}
+.sz button{padding:.05em .5em}
+.sz span{margin-left:.3rem}
+/* text sized from each box's own width, so it stays readable at any size, rotation or column count */
+.card{container-type:inline-size}
+.card .hd h2{font-size:clamp(15px,7.4cqw,34px)}
+.card .tag{font-size:clamp(11px,4.2cqw,17px)}
+.card .nm{font-size:clamp(12px,6.4cqw,28px)}
+.card .rl{font-size:clamp(12px,5.6cqw,24px)}
+.card .ph{font-size:clamp(13px,7cqw,32px)}
+.card .colh>div{font-size:clamp(9px,3.5cqw,14px)}
+.colh .nm{overflow:hidden;text-overflow:clip}
+.ex{container-type:inline-size}
+.ex b,.left .ex b{font-size:clamp(12px,9cqw,26px)}
+.ex span.n,.left .ex span.n{font-size:clamp(13px,12cqw,32px)}
+/* view mode: only First / Second / On call labels */
+.card .tag,.card .colh{display:none}
+/* editing: the board looks like the live screen; click a box to edit it */
+.edit .card,.edit .ex{cursor:pointer;position:relative}
+.edit .card{outline:2px dashed color-mix(in srgb,var(--c) 75%,transparent);outline-offset:-3px}
+.edit .card::after{content:"\270E  Edit";position:absolute;bottom:8px;right:10px;background:#fff;color:#12202e;font-weight:700;font-size:13px;padding:2px 10px;border-radius:99px;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.edit .card.addsp::after{content:none}
+.edit .ex:not(.addtile){outline:2px dashed color-mix(in srgb,var(--c) 75%,transparent);outline-offset:-3px}
+.ex.addtile{display:grid;place-items:center;border:2px dashed var(--ln);background:transparent;color:var(--mut);font-weight:700;font-size:15px;padding:.4rem;border-left:2px dashed var(--ln);text-align:center}
+.wrap .left .ex.addtile{flex:0 0 auto!important;min-width:90px;min-height:48px}
+.card.addsp{place-items:center;font-size:1.3rem;font-weight:700;color:var(--mut)}
+.fl{display:flex;flex-direction:column;gap:.2rem;margin:.7rem 0 .2rem;font-weight:600;font-size:.85rem;color:var(--mut)}
+.fl input:not([type=color]){font-size:1.05rem;padding:.45em .6em;color:var(--tx)}
+.fl input[type=color]{height:40px;width:60px;padding:0}
+.two{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:flex-end}
+.igrid{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0}
+.ib{width:48px;height:48px;font-size:26px;display:grid;place-items:center;padding:0;border-radius:10px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1}
+.ib.on{outline:3px solid #2f6fed;outline-offset:1px}
+.seg{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0}
+.drow{display:flex;gap:.5rem;align-items:center;margin:.4rem 0}
+.drow input{flex:1;min-width:0;font-size:1.05rem;padding:.45em .6em}
+.rlab{width:8em;flex:none;font-weight:700;color:var(--c)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+.step{display:flex;align-items:center;gap:.5rem;margin:.35rem 0}
+.step span{width:7em;flex:none}
+.step b{min-width:5em;text-align:center}
+.panel .x{border-color:#e5484d}
+/* strip layout: name + icon on the left, doctors side by side on the right */
+.card{flex-direction:row;min-height:0}
+.card .hd{flex-direction:column;justify-content:center;align-items:center;gap:.25rem;flex:0 0 27%;min-width:0;padding:.3rem .4rem;text-align:center;border-right:3px solid rgba(255,255,255,.55);position:relative}
+.card .hd h2{flex:none;order:-1;font-size:clamp(14px,3.2cqw,34px);line-height:1.05;overflow-wrap:anywhere}
+.card .hd .pic{width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px)}
+.card .hd .dh{position:absolute;top:2px;left:2px;order:-2;font-size:1.7em;padding:0 .2em}
+.card .docs{flex-direction:row;align-items:stretch;justify-content:space-evenly;gap:0;padding:.2rem .4rem;min-width:0}
+.card .docs li{flex:1 1 0;min-width:0;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:.1rem;padding:.15rem .4rem;border-bottom:0;border-right:1px dashed var(--ln)}
+.card .docs li:last-child{border-right:0}
+.card .docs .rl{flex:none;font-size:clamp(12px,1.9cqw,24px)}
+.card .docs .nm{flex:none;font-size:clamp(13px,2.3cqw,30px);text-align:center}
+.card .docs .ph{font-size:clamp(14px,2.7cqw,34px)}
+.card .docs .none{width:100%;text-align:center;align-self:center}
+.edit .card::after{bottom:4px}
+.card{--k:calc(var(--z,1)*var(--cz,1)*var(--cf,1))}
+.card .docs,.card .hd,.card .tag{zoom:1}
+main{grid-auto-rows:minmax(0,1fr)}
+.card .hd h2{font-size:calc(clamp(14px,3.2cqw,34px)*var(--z,1)*var(--cz,1)*var(--ch,1)*var(--ft,1)*var(--gt,1))}
+.card .docs .rl{font-size:calc(clamp(12px,1.9cqw,24px)*var(--k)*var(--fr,1)*var(--gr,1))}
+.card .docs .nm{font-size:calc(clamp(13px,2.3cqw,30px)*var(--k)*var(--fn,1)*var(--gn,1))}
+.card .docs .ph{font-size:calc(clamp(14px,2.7cqw,34px)*var(--k)*var(--fp,1)*var(--gp,1))}
+.card .hd .pic{zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.8)}
+.card .docs li{overflow:hidden}
+/* name cell | doctors | icon cell */
+.card .hd{flex:0 0 24%;justify-content:center;align-items:center;border-right:0;border-left:0;padding:.3rem .5rem}
+.card .hd h2{order:0;overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;min-width:0;flex:0 1 auto;text-align:center}.card .hd{padding:.3rem .9rem}
+.card .pc{flex:0 0 12%;min-width:0;background:var(--c);container-type:size;display:grid;place-items:center;position:relative}
+.card .pc .pic{width:72cqh;height:72cqh;max-width:84cqw;max-height:84cqw;font-size:42cqmin;zoom:1}
+.card .pc .pic svg,.card .pc .pic img{width:70%;height:70%}
+</style></head>
+<body>
+<header><h1 id="ttl"></h1><span id="clock"></span><span id="view"></span><span id="tools"></span><button id="tgl" aria-pressed="false">Edit</button></header>
+<div class="wrap"><div class="left"><aside id="ext" data-ek="ex"></aside><aside id="ext2" data-ek="ex2"></aside></div><main id="grid"></main></div>
+<div id="dlg" hidden></div>
+<script>
+const P=d=>`<path d="${d}"/>`;
+const IC={
+medicine:P("M6 3v6a4 4 0 0 0 8 0V3M10 13v2a5 5 0 0 0 10 0v-2")+'<circle cx="20" cy="11" r="2"/>',
+surgery:P("M3 21l10-10M13 11l5-8 3 3-8 5z"),
+ortho:'<path d="M8.5 8.5l7 7" stroke-width="3"/><circle cx="5.8" cy="8.5" r="2.2"/><circle cx="8.5" cy="5.8" r="2.2"/><circle cx="15.5" cy="18.2" r="2.2"/><circle cx="18.2" cy="15.5" r="2.2"/>',
+ent:P("M7 10a5 5 0 0 1 10 0c0 4-3 4-3 8a3 3 0 0 1-6 0M10 10a2 2 0 0 1 4 0c0 1.5-1 2-1.5 3"),
+eye:P("M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z")+'<circle cx="12" cy="12" r="3"/>',
+kidney:P("M15 4c-3 0-4 2-4 4 0 1-1 2-3 2-3 0-4 3-3 6s4 4 7 4c4 0 7-3 7-8 0-5-1-8-4-8z"),
+heart:P("M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z")+P("M7 12h3l1.5-3 2 5 1.5-2H18"),
+peds:'<circle cx="12" cy="12" r="9"/><circle cx="9" cy="11" r=".6"/><circle cx="15" cy="11" r=".6"/>'+P("M8.5 14.5c1.2 2 5.8 2 7 0M12 3c1-1.5 3-1 2.5.8"),
+gyne:'<circle cx="12" cy="9" r="5"/>'+P("M12 14v8M8 18h8"),
+pedsurg:P("M4 14L14 4a3.5 3.5 0 0 1 6 6L10 20a3.5 3.5 0 0 1-6-6zM9 9l6 6"),
+dental:P("M7 3c-3 0-4 3-3 6s1 5 2 9c.5 2 2 2 2.5 0l1-3h5l1 3c.5 2 2 2 2.5 0 1-4 1-6 2-9s0-6-3-6c-2 0-3 1-5 1S9 3 7 3z"),
+derm:P("M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z")+'<circle cx="10" cy="14" r=".7"/><circle cx="14" cy="16" r=".7"/>',
+psych:P("M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 4 3 3 0 0 0 2 4 3 3 0 0 0 3 4V4zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 4 3 3 0 0 1-2 4 3 3 0 0 1-3 4V4z"),
+pro:P("M4 5h16v14H4zM6 17c0-3 6-3 6 0M14 10h4M14 14h4")+'<circle cx="9" cy="11" r="2"/>',
+bed:P("M3 18V6M3 14h18v4M21 14v-3a3 3 0 0 0-3-3h-7v6")+'<circle cx="7" cy="11" r="1.6"/>',
+clean:P("M7 11h7v10H7zM9 11V8h5M14 8l4-1M17 11h3M17 14h3"),
+lab:P("M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3M7.5 15h9"),
+ct:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>'+P("M12 3v2M12 19v2M3 12h2M19 12h2"),
+us:P("M2 12c3-5 6 5 10 0s6 5 10 0M2 18c3-4 6 4 10 0s6 4 10 0M2 6c3-4 6 4 10 0s6 4 10 0"),
+xr:P("M4 3h16v18H4zM12 7v11M8 10h8M9 13.5h6"),
+plus:P("M12 5v14M5 12h14")};
+const LBL={medicine:"Stethoscope",surgery:"Scalpel",ortho:"Bone",ent:"Ear",eye:"Eye",kidney:"Kidney",heart:"Heart",peds:"Child",gyne:"Female sign",pedsurg:"Plaster",dental:"Tooth",derm:"Skin drop",psych:"Brain",pro:"ID badge",bed:"Bed",clean:"Spray",lab:"Flask",ct:"Scanner",us:"Waves",xr:"X-ray"};
+const EM={medicine:"🩺",surgery:"🔪",ortho:"🦴",ent:"👂",eye:"👁️",kidney:"🫘",heart:"❤️",peds:"👶",gyne:"🤰",pedsurg:"🩹",dental:"🦷",derm:"🧴",psych:"🧠",pro:"🪪",bed:"🛏️",clean:"🧹",lab:"🧪",ct:"🌀",us:"🔊",xr:"🩻",plus:"➕"};
+const KID={kidney:`<svg viewBox="0 0 24 24" style="width:74%;height:74%" aria-hidden="true"><path d="M14.5 11h5" stroke="#e03131" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M14.5 13.6h5" stroke="#3b6fd8" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M14 14.5c1.6 1.2 2.4 3 2.4 6" stroke="#e0a030" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M12.5 2.5C8 2.5 4.5 6 4.5 11c0 4.6 2.8 8.6 7 8.6 3.2 0 4.2-1.9 4.2-3.6 0-2-2.2-2.4-2.2-4.4s2.2-2.6 2.2-4.8c0-2.6-1.4-4.3-3.2-4.3z" fill="#c4574a" stroke="#7d2a22" stroke-width="1"/><path d="M8 7c1-1.4 2.4-2 3.6-2" stroke="#e89a8f" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>`};
+const pic=(k,c)=>`<span class="pic" aria-hidden="true">${c||KID[k]||EM[k]||"➕"}</span>`;
+const svg=k=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||IC.plus}</svg>`;
+const E=s=>String(s??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const D=(r,n,p)=>({role:r,name:n,phone:p});
+const seed=()=>({sp:[
+["Medicine","medicine","#2f6fed"],["Surgery","surgery","#d93b3b"],["Orthopedic","ortho","#c2740a"],["ENT","ent","#8250df"],
+["Ophthalmology","eye","#0e8fb0"],["Nephrology","kidney","#8a5a3c"],["Cardiology","heart","#c2185b"],["Pediatrics","peds","#2e9e4f"],
+["Gyne","gyne","#d6489a"],["Pediatric Surgery","pedsurg","#3a8fd8"],["Dental","dental","#5f7f9f"],["Dermatology","derm","#e0663a"],["Psychiatry","psych","#5c4bb8"]
+].map(([name,icon,color],i)=>({name,icon,color,doctors:[D("Consultant","Dr. Sample Name","2"+String(100+i*2)),D("Resident","Dr. Sample Name","2"+String(101+i*2))]})),
+ex:[["PRO","pro","1101","#5f7f9f"],["Bed Manager","bed","1102","#2e9e4f"],["Cleaner","clean","1103","#0e8fb0"],["LAB","lab","1104","#8250df"],["CT","ct","1105","#d93b3b"],["US","us","1106","#c2740a"],["XR","xr","1107","#3a8fd8"]].map(([name,icon,phone,color])=>({name,icon,phone,color}))});
+const KEY="ed-oncall-v1";let S,edit=false;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+const iso=n=>n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
+const td=()=>iso(new Date());
+const nice=d=>new Date(d+"T00:00").toLocaleDateString([], {weekday:"short",day:"numeric",month:"short"});
+const pd=t=>{t=(t||"").trim();let m;if(/^\d{4}-\d{2}-\d{2}$/.test(t))return t;if(m=t.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/))return m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");return""};
+const shown=s=>{const r=(s.roster||[]).filter(x=>x.d==td());return r.length?r:s.doctors};
+const list=s=>shown(s).filter(d=>(s.show||{})[d.role]!==false);
+const colh=s=>`<li class="colh"><div class="rl">On call</div><div class="nm">Name</div><div class="ph">${s.mode=="tier"?"Phone No.":"Phone"}</div></li>`;
+const tag=(s,i)=>{const n=(s.roster||[]).filter(x=>x.d==td()).length;return `<div class="tag">${edit?`Rows: <select data-s="sp" data-i="${i}" data-f="lay" aria-label="Rows" style="width:auto"><option value="two"${s.lay=="two"?" selected":""}>First &amp; Second</option><option value="three"${s.lay=="three"?" selected":""}>First, Second &amp; On call</option><option value="one"${s.lay!="two"&&s.lay!="three"?" selected":""}>First only</option></select> · Default list`:n?"On duty today · "+nice(td()):"Default list · no roster for today"}</div>`};
+let ros=null,msg="",lastD=td();
+let thm=false,edi=null,stg=false,noClick=0;
+const CK=["c_title","c_head","c_name","c_num"];
+function applyTheme(){const R=document.documentElement;R.dataset.theme=S.theme||"auto";
+const m={c_title:"--ttlc",c_head:"--hdc",c_name:"--nmc",c_num:"--lblc"};
+for(const k in m){S[k]?R.style.setProperty(m[k],S[k]):R.style.removeProperty(m[k])}
+S.c_num?R.style.setProperty("--lblf","none"):R.style.removeProperty("--lblf")}
+function fit(){const R=document.documentElement,g=document.getElementById("grid"),A=[...document.querySelectorAll("aside")].filter(a=>!a.hidden);
+const okA=()=>A.every(a=>a.scrollHeight<=a.clientHeight+2&&a.scrollWidth<=a.clientWidth+2&&[...a.querySelectorAll(".ex")].every(t=>t.scrollHeight<=t.clientHeight+2&&t.scrollWidth<=t.clientWidth+2));
+const run=(v,ok,mx)=>{let lo=.4,hi=mx;R.style.setProperty(v,hi);if(ok())return;for(let i=0;i<9;i++){const m=(lo+hi)/2;R.style.setProperty(v,m);if(ok())lo=m;else hi=m}R.style.setProperty(v,lo)};
+if(S.nofit){R.style.setProperty("--fit",1);R.style.setProperty("--fitx",1);g.querySelectorAll(".card").forEach(c=>{c.style.removeProperty("--cf");c.style.removeProperty("--ch")});return}
+R.style.setProperty("--fit",1);run("--fitx",okA,1.25);
+g.querySelectorAll(".card:not(.addsp)").forEach(c=>{const d=c.querySelector(".docs"),h=c.querySelector(".hd");if(!d||!h)return;
+const okD=()=>d.scrollHeight<=d.clientHeight+1&&d.scrollWidth<=d.clientWidth+1&&[...d.children].every(l=>l.scrollHeight<=l.clientHeight+1&&l.scrollWidth<=l.clientWidth+1&&[...l.children].every(m=>m.scrollWidth<=m.clientWidth+1));
+const okH=()=>h.scrollHeight<=h.clientHeight+1&&h.scrollWidth<=h.clientWidth+1&&[...h.children].every(m=>m.classList.contains("dh")||m.scrollWidth<=m.clientWidth+1);
+const go=(v,ok)=>{let lo=.3,hi=5;c.style.setProperty(v,hi);if(ok())return;for(let i=0;i<11;i++){const m=(lo+hi)/2;c.style.setProperty(v,m);if(ok())lo=m;else hi=m}c.style.setProperty(v,lo)};
+go("--cf",okD);go("--ch",okH)})}
+function renderTheme(o){const T=[["auto","Auto"],["light","Light"],["dark","Dark"],["contrast","High contrast"],["navy","Navy"],["paper","Paper"]],cur=S.theme||"auto";
+const L=[["c_title","Board title"],["c_head","Box headings"],["c_name","Names"],["c_num","Numbers and First / Second"]];
+o.hidden=false;o.innerHTML=`<div class="panel" role="dialog" aria-label="Theme and colours"><h3><span class="t">Theme and colours</span><button data-a="thmx">Close</button></h3>
+<p class="msg">Theme</p><div class="thm">${T.map(([k,l])=>`<button class="${cur==k?"on":""}" data-a="theme" data-k="${k}">${l}</button>`).join("")}</div>
+<p class="msg">Font colours. Leave on Theme default to keep each department's own colour.</p>
+${L.map(([k,l])=>`<div class="crow"><span>${l}${S[k]?"":" · theme default"}</span><input type="color" data-s="app" data-f="${k}" value="${S[k]||"#888888"}" aria-label="${l} colour"><button data-a="creset" data-k="${k}">Reset</button></div>`).join("")}
+<div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap"><button data-a="call">Reset all colours</button><button class="${S.nofit?"":"on"}" data-a="fit">Auto-fit text to screen: ${S.nofit?"Off":"On"}</button></div></div>`}
+const keep=(o,fn)=>{const sc=o.firstChild?o.firstChild.scrollTop:0;fn();if(o.firstChild)o.firstChild.scrollTop=sc};
+const mkPick=(k,i,x)=>`<div class="igrid">${Object.keys(LBL).map(n=>`<button class="ib${!x.emoji&&x.icon==n?" on":""}" data-a="pick" data-s="${k}" data-i="${i}" data-k="${n}" title="${LBL[n]}" aria-label="${LBL[n]}">${KID[n]||EM[n]}</button>`).join("")}</div>`;
+function renderEdit(o){const k=edi.k,i=edi.i,sp=k=="sp",x=S[k]&&S[k][i];
+if(!x){edi=null;o.hidden=true;o.innerHTML="";return}
+const f=(fld,lab,ph)=>`<label class="fl">${lab}<input data-s="${k}" data-i="${i}" data-f="${fld}" value="${E(x[fld])}" placeholder="${ph||""}"></label>`;
+const tail=`<div class="two"><label class="fl">Or type your own emoji<input class="em" style="width:5em;text-align:center" data-s="${k}" data-i="${i}" data-f="emoji" value="${E(x.emoji)}" placeholder="\u{1F642}"></label><label class="fl">Colour<input type="color" data-s="${k}" data-i="${i}" data-f="color" value="${E(x.color)}"></label></div>`;
+let body="";
+if(sp){const st=(lab,val,kk)=>`<div class="step"><span>${lab}</span><button data-a="sz" data-i="${i}" data-k="${kk}-" aria-label="${lab} less">\u2212</button><b>${val}</b><button data-a="sz" data-i="${i}" data-k="${kk}+" aria-label="${lab} more">+</button></div>`;
+const fst=(lab,k)=>`<div class="step"><span style="width:11em">${lab}</span><button data-a="fs" data-i="${i}" data-k="${k}-" aria-label="${lab} smaller">\u2212</button><b>${Math.round(((x.fs||{})[k]||1)*100)}%</b><button data-a="fs" data-i="${i}" data-k="${k}+" aria-label="${lab} larger">+</button></div>`;const cs=x.cs||1,rs=x.rs||1,lay=x.lay=="three"?"three":x.lay=="two"?"two":"one";
+body=f("name","Name")+`<div class="fl">Picture</div>`+mkPick(k,i,x)+tail+
+`<div class="fl">Tick what to show in this box</div><div class="seg"><button class="${x.ph?"on":""}" data-a="tph" data-i="${i}">Phone numbers on the board: ${x.ph?"shown":"hidden"}</button></div><p class="msg">Phone numbers you type are always saved, even when hidden on the board or the row is unticked.</p>`+
+x.doctors.map((d,j)=>{const on=(x.show||{})[d.role]!==false;return `<div class="drow" style="${on?"":"opacity:.55"}"><label class="rlab" style="display:flex;align-items:center;gap:.4rem;cursor:pointer"><input type="checkbox" style="width:24px;height:24px;flex:none" data-a="tshow" data-i="${i}" data-k="${E(d.role)}"${on?" checked":""}>${E(d.role)}</label><input data-s="doc" data-i="${i}" data-j="${j}" data-f="name" value="${E(d.name)}" placeholder="Doctor name" aria-label="${E(d.role)} doctor name"><input data-s="doc" data-i="${i}" data-j="${j}" data-f="phone" value="${E(d.phone)}" placeholder="Phone" style="max-width:9em" aria-label="${E(d.role)} phone"><button data-a="cdoc" data-i="${i}" data-j="${j}">Clear</button></div>`}).join("")+
+`<p class="msg">This is the default list. On days with a duty roster, the roster shows instead.</p>`+
+`<div class="fl">Font sizes (text always fills the box; these make a part bigger or smaller)</div>${fst("Box name","t")}${fst("First / Second labels","r")}${fst("Doctor names","n")}${fst("Phone numbers","p")}`+`<div class="fl">Box size</div>${st("Width",cs+(cs>1?" columns":" column"),"cs")}${st("Height",rs+(rs>1?" rows":" row"),"rs")}${st("Text",Math.round((x.fz||1)*100)+"%","fz")}`+
+`<div class="row"><button class="on" data-a="ros" data-i="${i}">Duty roster (${(x.roster||[]).length})</button><button data-a="emove" data-s="sp" data-i="${i}" data-k="-1">\u2039 Move earlier</button><button data-a="emove" data-s="sp" data-i="${i}" data-k="1">Move later \u203a</button><button class="x" data-a="edel" data-i="${i}">Delete this box</button></div>`}
+else{const oth=k=="ex"?"ext2Title":"extTitle";
+body=f("name","Name")+f("phone","Extension number")+`<div class="fl">Picture</div>`+mkPick(k,i,x)+tail+
+`<div class="row"><button data-a="emove" data-s="${k}" data-i="${i}" data-k="-1">\u2039 Move earlier</button><button data-a="emove" data-s="${k}" data-i="${i}" data-k="1">Move later \u203a</button><button data-a="xmove" data-s="${k}" data-i="${i}">Move to \u201c${E(S[oth])}\u201d</button><button class="x" data-a="xdel" data-s="${k}" data-i="${i}">Delete this extension</button></div>`}
+o.hidden=false;
+keep(o,()=>{o.innerHTML=`<div class="panel${sp?(x.ph?" sph":""):" sph"}" style="--c:${E(x.color)}" role="dialog" aria-label="Edit"><h3>${pic(x.icon,x.emoji)}<span class="t">${sp?"Edit department box":"Edit extension"}</span><button class="on" data-a="edx">Done</button></h3>${body}</div>`})}
+function renderSettings(o){const v=S.view||"auto",r=S.rot||0,sd=side(),B=(a,k,l,on)=>`<button class="${on?"on":""}" data-a="${a}" data-k="${k}">${l}</button>`;
+const stp=(lab,val,a,s2,kk)=>`<div class="step"><span>${lab}</span><button data-a="${a}" data-s="${s2}" data-k="${kk}-" aria-label="${lab} smaller">\u2212</button><b>${val}</b><button data-a="${a}" data-s="${s2}" data-k="${kk}+" aria-label="${lab} larger">+</button></div>`;
+const pc=n=>Math.round((n||1)*100)+"%";const gst=(lab,k)=>`<div class="step"><span>${lab}</span><button data-a="gfs" data-k="${k}-" aria-label="${lab} smaller">\u2212</button><b>${pc((S.gfs||{})[k])}</b><button data-a="gfs" data-k="${k}+" aria-label="${lab} larger">+</button></div>`;
+o.hidden=false;
+keep(o,()=>{o.innerHTML=`<div class="panel" role="dialog" aria-label="Board settings"><h3><span class="t">Board settings</span><button class="on" data-a="stx">Done</button></h3>
+<label class="fl">Board title<input data-s="app" data-f="title" value="${E(S.title)}"></label>
+<label class="fl">Name of the first extensions box<input data-s="app" data-f="extTitle" value="${E(S.extTitle)}"></label>
+<label class="fl">Name of the second extensions box<input data-s="app" data-f="ext2Title" value="${E(S.ext2Title)}"></label>
+<div class="fl">Where the extension boxes go</div>
+<div class="seg">${[["tb","Top and bottom"],["s","Left and right"],["l","Left"],["r","Right"],["t","Top"],["b","Bottom"]].map(([k,l])=>B("exside",k,l,sd==k)).join("")}<button data-a="exswap">Swap the two boxes</button></div>
+<div class="fl">Screen</div>
+<div class="seg">${B("setview","auto","Auto",v=="auto")}${B("setview","h","Horizontal",v=="h")}${B("setview","v","Vertical",v=="v")}</div>
+<div class="seg"><span style="align-self:center;color:var(--mut);font-weight:600;font-size:.85rem">Rotate</span>${B("setrot","0","0\u00b0",r==0)}${B("setrot","90","90\u00b0",r==90)}${B("setrot","270","270\u00b0",r==270)}</div>
+<div class="fl">Text size</div>
+<div class="step"><span>Whole board</span><button data-a="zm" data-k="-" aria-label="Smaller">\u2212</button><b>${pc(S.zoom)}</b><button data-a="zm" data-k="+" aria-label="Larger">+</button></div>
+${stp("First extensions box",pc(S.exZ),"exsz","ex","z")}${stp("Second extensions box",pc(S.exZ2),"exsz","ex2","z")}${stp("Extensions width",pc(S.exW),"exsz","ex","w")}
+<div class="fl">Font sizes for all boxes</div>${gst("Box names","t")}${gst("First / Second labels","r")}${gst("Doctor names","n")}${gst("Phone numbers","p")}
+<div class="row"><button data-a="thm">Theme and colours</button><button data-a="rsz">Reset box sizes</button><button class="x" data-a="rst">Reset sample data</button></div></div>`})}
+function renderDlg(){const o=document.getElementById("dlg"),s=ros==null?null:S.sp[ros];
+if(thm){renderTheme(o);return}
+if(!s){ros=null;if(edi){renderEdit(o);return}if(stg){renderSettings(o);return}o.hidden=true;o.innerHTML="";return}
+const sc=o.firstChild?o.firstChild.scrollTop:0,R=s.roster=s.roster||[],TD=td();R.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
+let h="",last="";
+R.forEach((x,k)=>{if(x.d!=last){last=x.d;h+=`<h4 class="${x.d==TD?"tdy":x.d<TD?"past":""}">${x.d==TD?"Today · ":""}${nice(x.d)}</h4>`}
+const a=`data-s="ros" data-i="${ros}" data-j="${k}"`;
+h+=`<div class="rr${x.d<TD?" past":""}"><input ${a} data-f="name" value="${E(x.name)}" aria-label="Doctor name"><input ${a} data-f="role" value="${E(x.role)}" placeholder="${s.mode=="tier"?"First / Second":"Duty No."}" aria-label="Role"><input ${a} data-f="phone" value="${E(x.phone)}" placeholder="Ext" aria-label="Phone"><button class="x" data-a="rdel" data-i="${ros}" data-j="${k}" aria-label="Delete entry">✕</button></div>`});
+o.hidden=false;
+o.innerHTML=`<div class="panel${s.ph?" sph":""}" style="--c:${E(s.color)}" role="dialog" aria-label="Duty roster"><h3>${pic(s.icon,s.emoji)}<span class="t">${E(s.name)} · duty roster</span><button data-a="rcl">Close</button></h3>
+<p class="msg">Whoever is listed for today shows on the board automatically, and the board switches over at midnight. Days with no roster show the default list.</p>
+<div class="rf"><label>From<input type="date" id="rf" value="${lastD}"></label><label>To (optional, for a range)<input type="date" id="rt"></label><label>Doctor<input id="rn" placeholder="Dr. name"></label><label>${s.mode=="tier"?"First / Second":"Duty No."}<input id="rr" placeholder="${s.mode=="tier"?"First":"1"}"></label><label>Ext / phone<input id="rp"></label><button class="on" data-a="radd">Add to roster</button></div>
+<p class="msg">${E(msg)}</p>
+<details><summary>Paste many at once</summary><p class="msg">One per line: date, name, role, phone. Dates as 2026-11-05 or 05/11/2026. Rows copied from Excel work too.</p><textarea id="rb" rows="4"></textarea><button data-a="rimp">Import lines</button></details>
+${h||'<p class="msg">No roster entries yet.</p>'}
+<div style="margin-top:.8rem"><button data-a="rclr">Delete past days</button></div></div>`;
+o.firstChild.scrollTop=sc}
+let COLS=3;
+const side=()=>S.exSide===undefined?"tb":(S.exSide||"l");
+const isPort=()=>{const r=S.rot||0,rt=r==90||r==270,w=rt?innerHeight:innerWidth,h=rt?innerWidth:innerHeight,v=S.view||"auto";return v=="v"?true:v=="h"?false:w<h};
+const eff=()=>{const x=side();return isPort()?(x=="l"||x=="s"?"t":x=="r"?"b":x):x};
+const szc=(s,i)=>{const b=(k,l,t)=>`<button data-a="sz" data-i="${i}" data-k="${k}" aria-label="${t}">${l}</button>`;return `<div class="sz">Width ${b("cs-","−","Narrower")}${b("cs+","+","Wider")}<span>Height</span> ${b("rs-","−","Shorter")}${b("rs+","+","Taller")}<span>Text</span> ${b("fz-","A−","Smaller text")}${b("fz+","A+","Larger text")}<span>Phone</span> ${b("ph",s.ph?"On":"Off","Show or hide phone numbers")}</div>`};
+function applyLayout(){const W=innerWidth,H=innerHeight,r=S.rot||0,rt=r==90||r==270,w=rt?H:W,h=rt?W:H,v=S.view||"auto",port=v=="v"?true:v=="h"?false:w<h,d=document.documentElement,b=document.body;
+d.style.setProperty("--vw",w/100+"px");d.style.setProperty("--vh",h/100+"px");
+d.classList.toggle("port",port);d.classList.toggle("land",!port);
+b.style.cssText=rt?`position:fixed;top:0;left:0;width:${w}px;height:${h}px;transform-origin:0 0;transform:${r==270?`translateX(${W}px) rotate(90deg)`:`translateY(${H}px) rotate(-90deg)`}`:"";
+const n=S.sp.length+(edit?1:0),a=v=="v"?.55:v=="h"?1.75:(eff()=="t"||eff()=="b"||eff()=="tb"?1.35*(w-24)/Math.max(1,h*.8-70):((eff()=="s"?w*.9:w*.85)-24)/Math.max(1,h-70)),cols=port?1:(n>8?2:1);
+COLS=cols;document.getElementById("grid").style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`}
+let armed=false;const mv=(s,i,j,k)=>{const L=s=="ex"?S.ex:s=="ex2"?S.ex2:s=="sp"?S.sp:S.sp[i].doctors,n=s=="doc"?j:i,m=n+k;if(m<0||m>=L.length)return;[L[n],L[m]]=[L[m],L[n]]};
+const fix=()=>{S.ext2Title=S.ext2Title||"More Extensions";if(!S.ex2)S.ex2=[["Pharmacy","pro","1201","#2e9e4f"],["Security","pro","1202","#d93b3b"],["Blood Bank","lab","1203","#c2185b"]].map(([name,icon,phone,color])=>({name,icon,phone,color}));S.title=S.title||"Emergency Department · On-Call Doctors";S.extTitle=S.extTitle||"Extensions";S.zoom=S.zoom||1;
+const TWO=["medicine","surgery","cardiology","pediatrics","gyne","pediatric surgery"];
+const setLay=(s,l)=>{s.mode="tier";s.lay=l;s.doctors=s.doctors||[];
+if(l=="two"||l=="three"){const R=["First","Second","On call"],n=l=="two"?2:3;while(s.doctors.length<n)s.doctors.push(D("","",""));s.doctors.forEach((d,k)=>{if(k<n)d.role=R[k]})}
+else{while(s.doctors.length>1&&!s.doctors[s.doctors.length-1].name.trim()||s.doctors.length>1&&/^Dr\. Sample Name$/.test(s.doctors[s.doctors.length-1].name))s.doctors.pop();if(!s.doctors.length)s.doctors.push(D("","",""));s.doctors[0].role="First"}};
+const T3=["orthopedic","ent","ophthalmology","nephrology","dental","dermatology","psychiatry"];
+if(!S.v3){S.sp.forEach(s=>{if(T3.includes((s.name||"").trim().toLowerCase()))setLay(s,"three")});S.v3=1}
+const PH=["orthopedic","ent","ophthalmology","dental","dermatology","psychiatry"];
+S.sp.forEach(s=>{if(s.ph===undefined)s.ph=PH.includes((s.name||"").trim().toLowerCase())});
+S.sp.forEach(s=>{if(!s.lay)setLay(s,TWO.includes((s.name||"").trim().toLowerCase())?"two":"one")});
+S.sp.forEach(s=>{const R=["First","Second","On call"];if(!s.show){const n=s.lay=="three"?3:s.lay=="two"?2:1;s.show={First:true,Second:n>1,"On call":n>2}}
+s.doctors=s.doctors||[];while(s.doctors.length<3)s.doctors.push(D("","",""));s.doctors.forEach((d,k)=>{if(k<3)d.role=R[k]});s.doctors.length=3})};
+if(!S||!S.sp||!S.ex)S=seed();fix();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const opts=v=>Object.keys(LBL).map(k=>`<option value="${k}"${k==v?" selected":""}>${EM[k]} ${LBL[k]}</option>`).join("");
+const extPanel=(k,tk)=>"<h3>"+E(S[tk])+"</h3>"+S[k].map((x,i)=>`<div class="ex" data-ek="${k}" data-ei="${i}" ${edit?`data-a="edit" data-k="${k}" data-i="${i}"`:""} style="--c:${E(x.color)}">${edit?`<span class="dh" data-drag="${k}" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(x.icon,x.emoji)}<div><b>${E(x.name)}</b><span class="n">${E(x.phone)}</span></div></div>`).join("")+(edit?`<div class="ex addtile" data-a="aex" data-s="${k}" role="button" tabindex="0">+ Add</div>`:"");
+function render(keepDlg){
+applyTheme();
+document.body.classList.toggle("edit",edit);{const W=document.querySelector(".wrap");W.classList.toggle("rev",eff()=="r");W.classList.toggle("top",eff()=="t");W.classList.toggle("bot",eff()=="b");W.classList.toggle("split",eff()=="s");W.classList.toggle("tb",eff()=="tb")}document.querySelector(".left").classList.toggle("swap",!!S.exSwap);armed=false;applyLayout();
+document.getElementById("view").innerHTML="";
+document.documentElement.style.setProperty("--z",S.zoom);{const G=S.gfs||{};for(const k of "trnp")document.documentElement.style.setProperty("--g"+k,G[k]||1)}document.documentElement.style.setProperty("--exw",S.exW||1);document.documentElement.style.setProperty("--ez",S.exZ||1);document.documentElement.style.setProperty("--exw2",S.exW2||1);document.documentElement.style.setProperty("--ez2",S.exZ2||1);
+document.getElementById("ttl").innerHTML=edit?`<span data-a="settings" title="Change the board title" style="cursor:pointer">${E(S.title)} \u270E</span>`:E(S.title);
+document.getElementById("tools").innerHTML=edit?`<button class="on" data-a="asp">+ Add department</button><button data-a="settings">Settings</button>`:"";
+const g=document.getElementById("grid"),a=document.getElementById("ext");
+a.innerHTML=extPanel("ex","extTitle");
+const a2=document.getElementById("ext2");a2.hidden=!edit&&!(S.ex2||[]).length;a2.innerHTML=extPanel("ex2","ext2Title");a.style.flexGrow=S.ex.length+1;a2.style.flexGrow=(S.ex2||[]).length+1;
+g.innerHTML=S.sp.map((s,i)=>`<section class="card${s.ph?" sph":""}" data-di="${i}" ${edit?`data-a="edit" data-k="sp" data-i="${i}"`:""} style="--c:${E(s.color)};--cz:${s.fz||1};--ft:${(s.fs||{}).t||1};--fr:${(s.fs||{}).r||1};--fn:${(s.fs||{}).n||1};--fp:${(s.fs||{}).p||1};grid-column:span ${Math.min(s.cs||1,COLS)};grid-row:span ${s.rs||1}"><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}<h2>${E(s.name)}</h2></div><ul class="docs${s.mode=="tier"?" tier":""}">${list(s).length?list(s).map(d=>`<li><div class="rl">${E(d.role)}</div><div class="nm">${d.name?E(d.name):"\u2014"}</div><div class="ph">${E(d.phone)}</div></li>`).join(""):'<li class="none">No doctor assigned</li>'}</ul><div class="pc">${pic(s.icon,s.emoji)}</div></section>`).join("")+(edit?'<button class="card addsp" data-a="asp">+ Add department</button>':"");
+if(!keepDlg)renderDlg();fit();
+}
+document.addEventListener("input",e=>{const t=e.target,d=t.dataset;if(!d.f)return;
+const o=d.s=="app"?S:d.s=="ros"?S.sp[d.i].roster[d.j]:d.s=="ex"?S.ex[d.i]:d.s=="ex2"?S.ex2[d.i]:d.s=="sp"?S.sp[d.i]:S.sp[d.i].doctors[d.j];o[d.f]=t.value;save();if(d.s=="app"&&d.f[0]=="c"&&d.f[1]=="_"){applyTheme();return}
+if(d.s=="ros")return;render(true)});
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".dh"))return;if(Date.now()<noClick)return;const b=e.target.closest("[data-a]");if(!b)return;const d=b.dataset,i=+d.i,j=+d.j;
+if((d.a=="rst"||d.a=="edel"||d.a=="xdel")&&!armed){armed=true;b.textContent="Tap again to confirm";return}
+({edit:()=>{edi={k:d.k,i}},edx:()=>{edi=null},settings:()=>{stg=true},stx:()=>{stg=false},
+pick:()=>{const o=S[d.s][i];o.icon=d.k;delete o.emoji},fs:()=>{const o=S.sp[i];o.fs=o.fs||{};const k=d.k[0];o.fs[k]=Math.max(.5,Math.min(2.5,+((o.fs[k]||1)+(d.k[1]=="+"?.1:-.1)).toFixed(1)))},gfs:()=>{S.gfs=S.gfs||{};const k=d.k[0];S.gfs[k]=Math.max(.5,Math.min(2.5,+((S.gfs[k]||1)+(d.k[1]=="+"?.1:-.1)).toFixed(1)))},
+tshow:()=>{const o=S.sp[i];o.show=o.show||{};o.show[d.k]=!(o.show[d.k]!==false)},tph:()=>{S.sp[i].ph=!S.sp[i].ph},
+edel:()=>{S.sp.splice(i,1);edi=null},xdel:()=>{S[d.s].splice(i,1);edi=null},
+emove:()=>{const L=S[d.s],m=i+(+d.k);if(m>=0&&m<L.length){[L[i],L[m]]=[L[m],L[i]];edi={k:d.s,i:m}}},
+xmove:()=>{const to=d.s=="ex"?"ex2":"ex",[m]=S[d.s].splice(i,1);S[to].push(m);edi={k:to,i:S[to].length-1}},
+setview:()=>{S.view=d.k=="auto"?"":d.k},setrot:()=>{S.rot=+d.k},
+thm:()=>{thm=true},thmx:()=>{thm=false},theme:()=>{S.theme=d.k},creset:()=>{delete S[d.k]},call:()=>{CK.forEach(k=>delete S[k])},fit:()=>{S.nofit=!S.nofit},lay:()=>{S.view=({auto:"h",h:"v",v:"auto"})[S.view||"auto"]},rot:()=>{S.rot=({0:90,90:270,270:0})[S.rot||0]},ros:()=>{ros=i;msg=""},rcl:()=>{ros=null},
+radd:()=>{const g=id=>document.getElementById(id).value.trim(),f=g("rf"),t=g("rt")||f,n=g("rn");
+if(!f||!n){msg="Enter a date and a doctor name.";return}
+if(t<f){msg="The To date is before the From date.";return}
+const R=S.sp[ros].roster=S.sp[ros].roster||[];let c=0;
+for(let a=new Date(f+"T00:00"),e=new Date(t+"T00:00");a<=e&&c<366;a.setDate(a.getDate()+1),c++)R.push({d:iso(a),name:n,role:g("rr"),phone:g("rp")});
+lastD=f;msg="Added "+n+" for "+c+" day"+(c>1?"s":"")+"."},
+rimp:()=>{const R=S.sp[ros].roster=S.sp[ros].roster||[];let c=0;document.getElementById("rb").value.split(/\r?\n/).forEach(l=>{const p=l.split(/[,\t]/).map(x=>x.trim()),dt=pd(p[0]);if(dt&&p[1]){R.push({d:dt,name:p[1],role:p[2]||"",phone:p[3]||""});c++}});msg=c?"Imported "+c+" entries.":"No valid lines found. Use: date, name, role, phone."},
+rdel:()=>S.sp[ros].roster.splice(j,1),rclr:()=>{S.sp[ros].roster=S.sp[ros].roster.filter(x=>x.d>=td());msg="Past days deleted."},
+up:()=>mv(d.s,i,j,-1),dn:()=>mv(d.s,i,j,1),zm:()=>{S.zoom=Math.max(.6,Math.min(1.8,+(S.zoom+(d.k=="+"?.1:-.1)).toFixed(1)))},rst:()=>{S=seed();fix();armed=false;edi=null;stg=false},dex:()=>S[d.s||"ex"].splice(i,1),dsp:()=>S.sp.splice(i,1),sz:()=>{const o=S.sp[i];if(d.k=="ph"){o.ph=!o.ph;return}const f=d.k.slice(0,2),up=d.k.endsWith("+");if(f=="cs")o.cs=Math.max(1,Math.min(4,(o.cs||1)+(up?1:-1)));else if(f=="rs")o.rs=Math.max(1,Math.min(4,(o.rs||1)+(up?1:-1)));else o.fz=Math.max(.6,Math.min(2.2,+((o.fz||1)+(up?.1:-.1)).toFixed(1)))},exside:()=>{S.exSide=d.k},exswap:()=>{S.exSwap=!S.exSwap},exsz:()=>{const k=d.k[0],up=d.k[1]=="+",x=d.s=="ex2"?"2":"",W="exW"+x,Z="exZ"+x;if(k=="w")S[W]=Math.max(.6,Math.min(2,+((S[W]||1)+(up?.1:-.1)).toFixed(1)));else S[Z]=Math.max(.6,Math.min(2.2,+((S[Z]||1)+(up?.1:-.1)).toFixed(1)))},rsz:()=>{S.sp.forEach(o=>{delete o.cs;delete o.rs;delete o.fz;delete o.fs});S.gfs={};delete S.exW;delete S.exZ;delete S.exW2;delete S.exZ2},ddoc:()=>S.sp[i].doctors.splice(j,1),cdoc:()=>{S.sp[i].doctors[j].name=""},
+adoc:()=>S.sp[i].doctors.push(D(["First","Second","On call"][S.sp[i].doctors.length]||"","","")),aex:()=>{const L=S[d.s||"ex"];L.push({name:"New",icon:"plus",phone:"",color:"#5f7f9f"});edi={k:d.s||"ex",i:L.length-1}},
+asp:()=>{S.sp.push({name:"New department",icon:"medicine",color:"#2f6fed",mode:"tier",lay:"one",ph:false,doctors:[D("First","","")]});edi={k:"sp",i:S.sp.length-1}}})[d.a]();save();render()});
+let drag=null,over=null;
+const hit=(x,y)=>{const t=document.elementFromPoint(x,y);if(!t||!drag)return null;return drag.k=="sp"?t.closest(".card[data-di]"):(t.closest(".ex[data-ek]")||t.closest("aside[data-ek]"))};
+document.addEventListener("pointerdown",e=>{const h=e.target.closest&&e.target.closest(".dh");if(!h||!edit)return;e.preventDefault();drag={k:h.dataset.drag,i:+h.dataset.i,el:h.closest(".card,.ex")};drag.el.classList.add("dragging");document.body.classList.add("drg")});
+document.addEventListener("pointermove",e=>{if(!drag)return;const t=hit(e.clientX,e.clientY);if(over&&over!==t)over.classList.remove("drop");over=t;if(t&&t!==drag.el)t.classList.add("drop")});
+const endDrag=(e,ok)=>{if(!drag)return;const d=drag,t=ok?hit(e.clientX,e.clientY):null;drag=null;noClick=Date.now()+400;if(over)over.classList.remove("drop");over=null;d.el.classList.remove("dragging");document.body.classList.remove("drg");
+if(!t||t===d.el)return;
+if(d.k=="sp"){const to=+t.dataset.di,[m]=S.sp.splice(d.i,1);S.sp.splice(to,0,m)}
+else{const tk=t.dataset.ek,[m]=S[d.k].splice(d.i,1);const ti=t.dataset.ei!==undefined?+t.dataset.ei:S[tk].length;S[tk].splice(ti,0,m)}
+save();render()};
+document.addEventListener("pointerup",e=>endDrag(e,true));document.addEventListener("pointercancel",e=>endDrag(e,false));
+const T=document.getElementById("tgl");
+T.onclick=()=>{edit=!edit;if(!edit){edi=null;stg=false;thm=false;ros=null}T.textContent=edit?"Done":"Edit";T.classList.toggle("on",edit);T.setAttribute("aria-pressed",edit);render()};
+const clk=()=>{document.getElementById("clock").textContent=new Date().toLocaleString([], {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
+clk();setInterval(clk,15000);render();
+let curDay=td();setInterval(()=>{if(td()!==curDay&&!edit&&ros==null){curDay=td();render()}},20000);
+addEventListener("resize",()=>{applyLayout();fit()});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fit());
+const closeTop=()=>{if(thm)thm=false;else if(ros!=null)ros=null;else if(edi)edi=null;else stg=false;renderDlg()};
+document.addEventListener("keydown",e=>{if(e.key=="Escape")closeTop()});
+document.getElementById("dlg").onclick=e=>{if(e.target.id=="dlg")closeTop()};
+</script></body></html>
+
+</body></html>
